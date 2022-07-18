@@ -26,14 +26,8 @@ jobs:
       working-directory: quarto
       run: |
        $res=.\update.ps1
-       echo "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
        Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
-       echo "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)" >> $GITHUB_ENV
-
-    - name: check content
-      run: |
-        echo $env:CHOCO_UPDATE
-        echo "${{ env.CHOCO_UPDATE }}"
+       Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)"
 
     - name: Commit Updated Spec
       if: ${{ fromJSON(env.CHOCO_UPDATE) }}
