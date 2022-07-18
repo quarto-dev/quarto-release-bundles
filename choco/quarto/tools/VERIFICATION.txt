@@ -1,0 +1,15 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+This chocolatey package is maintained by Quarto authors at https://github.com/quarto-dev/ 
+
+MSI included can be verified this way: 
+
+- Download installer: https://github.com/quarto-dev/quarto-cli/releases/download/v1.0.28/quarto-1.0.28-win.msi
+
+- Use 'Get-FileHash' to check the checksum: F1C9330DB15C0A74143F728A811A00CBF7A429E423D36E1396A8F8085F39CC13
+
+ 
+<Include details of how to verify checksum contents>
+<If software vendor, explain that here - checksum verification instructions are optional>

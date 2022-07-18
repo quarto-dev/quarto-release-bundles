@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>1.0.27</version>
+    <version>1.0.28</version>
     <!-- <packageSourceUrl>Where is this Chocolatey package located (think GitHub)? packageSourceUrl is highly recommended for the community feed</packageSourceUrl>-->
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Christophe Dervieux</owners>
@@ -51,13 +51,17 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <bugTrackerUrl>https://github.com/quarto-dev/quarto-cli/issues</bugTrackerUrl>
     <tags>quarto markdown publishing latex pdf revealjs html cross-plateform cli</tags>
     <summary>Quarto is an open-source scientific and technical publishing system built on Pandoc.</summary>
-    <description>With quarto you can: 
-    
-    * Create dynamic content with Python, R, Julia, and Observable.
-    * Author documents as plain text markdown or Jupyter notebooks.
-    * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
-    * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
-    </description>
+    <description><![CDATA[This repo contains the source code of choco quarto bundle
+
+Quarto is an open-source scientific and technical publishing system built on Pandoc.
+
+### Features
+
+* Create dynamic content with Python, R, Julia, and Observable.
+* Author documents as plain text markdown or Jupyter notebooks.
+* Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
+* Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
+]]></description>
     <releaseNotes>https://github.com/quarto-dev/quarto-cli/releases/tag/v1.0.28</releaseNotes>
     <!-- =============================== -->
 
