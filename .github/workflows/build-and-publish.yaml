@@ -23,17 +23,25 @@ jobs:
         choco install -y au
 
     - name: Update Package
-      id: update-package
       working-directory: quarto
       run: |
-       $updated=$(.\update.ps1 | Select-Object -Property updated | ConvertTo-Json)
-       echo "::set-output name=matrix::${updated}"
+       $res=.\update.ps1
+       echo "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)" >> $GITHUB_ENV
+       echo "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)" >> $GITHUB_ENV
+
+    - name: Commit Updated Spec
+      if: ${{ fromJSON(env.CHOCO_UPDATE) }}
+      run: |
+        git config --local user.name 'github-actions[bot]'
+        git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+        git commit -am  "New version ${{ env.CHOCO_NEW_VERSION }}" || echo "No changes to commit"
+        git push origin || echo "No changes to commit"
 
     - name: Publish Choco Package
       working-directory: quarto
       env: 
         api_key: ${{ secrets.CHOCO_KEY }}
-      if: ${{ fromJSON(steps.update-package.outputs.matrix) && inputs.publish }}
+      if: ${{ fromJSON(env.CHOCO_UPDATE) && inputs.publish }}
       run: |
         echo "deploying to chocolatey"
         # Push-Package
