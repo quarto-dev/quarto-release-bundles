@@ -1,0 +1,39 @@
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Whether to publish or not the package on chocolatey
+        required: false
+        type: boolean
+        default: false
+    
+name: Build Choco package & Publish
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    name: Build chocolatey package
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v3
+
+    - name: Install Chocolatey Automatic Package Updater Module
+      run: |
+        choco install -y au
+
+    - name: Update Package
+      id: update-package
+      working-directory: quarto
+      run: |
+       $updated=$(update.ps1 | Select-Object -Property updated | ConvertTo-Json)
+       echo "::set-output name=matrix::${updated}"
+
+    - name: Publish Choco Package
+      working-directory: quarto
+      env: 
+        api_key: ${{ secrets.CHOCO_KEY }}
+      if: ${{ fromJSON(steps.update-package.outputs.matrix) && inputs.publish }}
+      run: |
+        echo "deploying to chocolatey"
+        # Push-Package
