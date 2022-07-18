@@ -34,7 +34,7 @@ jobs:
       run: |
         git config --local user.name 'github-actions[bot]'
         git config --local user.email 'github-actions[bot]@users.noreply.github.com'
-        git commit -am  'New version ${{ fromJSON(env.CHOCO_NEW_VERSION) }}' || echo "No changes to commit"
+        git commit -am  'New quarto version ${{ fromJSON(env.CHOCO_NEW_VERSION) }}' || echo "No changes to commit"
         git push origin || echo "No changes to commit"
 
     - name: Publish Choco Package
