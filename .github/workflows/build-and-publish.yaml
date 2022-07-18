@@ -26,7 +26,7 @@ jobs:
       id: update-package
       working-directory: quarto
       run: |
-       $updated=$(update.ps1 | Select-Object -Property updated | ConvertTo-Json)
+       $updated=$(.\update.ps1 | Select-Object -Property updated | ConvertTo-Json)
        echo "::set-output name=matrix::${updated}"
 
     - name: Publish Choco Package
