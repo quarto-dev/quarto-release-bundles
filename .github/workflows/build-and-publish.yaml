@@ -29,6 +29,10 @@ jobs:
        echo "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)" >> $GITHUB_ENV
        echo "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)" >> $GITHUB_ENV
 
+    - name: check content
+      run: |
+        echo $env:CHOCO_UPDATE
+
     - name: Commit Updated Spec
       if: ${{ fromJSON(env.CHOCO_UPDATE) }}
       run: |
