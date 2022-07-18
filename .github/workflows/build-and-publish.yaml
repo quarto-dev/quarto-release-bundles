@@ -27,7 +27,7 @@ jobs:
       run: |
        $res=.\update.ps1
        echo "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
-       echo "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)" >> $GITHUB_ENV
+       Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
        echo "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)" >> $GITHUB_ENV
 
     - name: check content
