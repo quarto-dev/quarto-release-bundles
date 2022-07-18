@@ -1,0 +1,11 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+This chocolatey package is maintained directly by Quarto authors <https://quarto.org/about.html>
+
+Verification can be done this this way: 
+
+- Downloaded bundle: https://github.com/quarto-dev/quarto-cli/releases/download/v1.0.28/quarto-1.0.28-win.zip
+
+- Use 'Get-FileHash' to check the checksum: 238A8795B6AF84C7F61E1EF3962ECC0C88309CD36C6BD4F07D5AB60E913EBF9B
