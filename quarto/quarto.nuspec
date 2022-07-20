@@ -3,7 +3,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
-    <version>1.0.32</version>
+    <version>1.0.35</version>
     <packageSourceUrl>https://github.com/quarto-dev/quarto-choco-bundle</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
@@ -28,7 +28,7 @@
 * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
 * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 </description>
-    <releaseNotes>https://github.com/quarto-dev/quarto-cli/releases/tag/v1.0.32</releaseNotes>
+    <releaseNotes>https://github.com/quarto-dev/quarto-cli/releases/tag/v1.0.35</releaseNotes>
     <!-- =============================== -->
   </metadata>
   <files>
