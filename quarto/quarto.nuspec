@@ -4,7 +4,7 @@
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
     <version>1.0.32</version>
-    <packageSourceUrl>https://github.com/quarto-dev/quarto-choco-bundle</packageSourceUrl>-->
+    <packageSourceUrl>https://github.com/quarto-dev/quarto-choco-bundle</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
 
