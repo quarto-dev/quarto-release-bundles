@@ -9,7 +9,7 @@
     <!-- ============================== -->
 
     <!-- == SOFTWARE SPECIFIC SECTION == -->
-    <title>quarto</title>
+    <title>Quarto</title>
     <authors>RStudio, PBC</authors>
     <projectUrl>https://quarto.org/</projectUrl>
     <iconUrl>https://cdn.statically.io/gh/quarto-dev/quarto-web/53cd12342b3842e1b17d4c8336767f4f15d084c3/favicon.png</iconUrl>
