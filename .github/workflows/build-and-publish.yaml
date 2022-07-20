@@ -44,4 +44,4 @@ jobs:
       if: ${{ fromJSON(env.CHOCO_UPDATE) && inputs.publish }}
       run: |
         echo "deploying to chocolatey"
-        # Push-Package
+        Push-Package
