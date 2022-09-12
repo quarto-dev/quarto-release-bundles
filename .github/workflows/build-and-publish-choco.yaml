@@ -45,7 +45,7 @@ jobs:
     - name: Publish Choco Package
       env: 
         CHOCO_KEY: ${{ secrets.CHOCO_KEY }}
-      if: ${{ fromJSON(env.CHOCO_UPDATE) && inputs.publish }}
+      if: ${{ inputs.publish }}
       run: |
         echo "deploying to chocolatey"
         choco apikey --key $Env:CHOCO_KEY --source https://push.chocolatey.org/

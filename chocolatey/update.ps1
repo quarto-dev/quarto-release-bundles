@@ -21,57 +21,60 @@ function updateAndBuild() {
 
         [version]$Version = [version]::parse($xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText)
         [version]$NewVersion = [version]::parse($release_info.version)
+        res.NewVersion = $NewVersion.ToString()
 
         Write-Host "> Current: $Version - New: $NewVersion"
 
         if ($NewVersion -le $Version) {
-            $res.Updated = $false
             Write-Host -ForegroundColor DarkBlue "  > No new version"
-            Exit
+            $res.Updated = $false
+        } else {
+            Write-Host -ForegroundColor DarkBlue "  > New version found"
+            $res.Updated = $true
+
+            $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
+            $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:releaseNotes', $ns).InnerText = $release_info.description
+
+            Write-Host "> Updating Nuspec file $NuSpecFile"
+            $xml.Save("$NuSpecFile")
         }
-        Write-Host -ForegroundColor DarkBlue "  > New version found"
-        $res.Updated = $true
-        $res.NewVersion = $NewVersion.ToString()
-
-        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
-        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:releaseNotes', $ns).InnerText = $release_info.description
-
-        Write-Host "> Updating Nuspec file $NuSpecFile"
-        $xml.Save("$NuSpecFile")
     }
     catch
     {
-        $res.Updated = $false
         Write-Host -ForegroundColor DarkRed "   > Issue with writing XML"
         throw
     }
 
-    # Replace information in document
-    Write-Host "> Updating tools files"
-    function SearchReplace {
-        param (
-            # Path to file to search and replace
-            [string] $File, 
-            # Pattern to search for
-            [string] $Search, 
-            # Pattern to replace
-            [string] $Replace
-        )
-        (Get-Content $File) | % {$_ -replace $Search, $Replace } | Set-Content $File
+    if ($res.Updated) {
+
+        # Replace information in document
+        Write-Host "> Updating tools files"
+        function SearchReplace {
+            param (
+                # Path to file to search and replace
+                [string] $File, 
+                # Pattern to search for
+                [string] $Search, 
+                # Pattern to replace
+                [string] $Replace
+            )
+            (Get-Content $File) | % {$_ -replace $Search, $Replace } | Set-Content $File
+        }
+
+        SearchReplace ".\legal\VERIFICATION.txt" "(?i)(\s+bundle:).*" "`${1} $($zip.download_url)"
+        SearchReplace ".\legal\VERIFICATION.txt" "(?i)(checksum:).*" "`${1} $($zip.checksum)"
     }
 
-    SearchReplace ".\legal\VERIFICATION.txt" "(?i)(\s+bundle:).*" "`${1} $($zip.download_url)"
-    SearchReplace ".\legal\VERIFICATION.txt" "(?i)(checksum:).*" "`${1} $($zip.checksum)"
 
-    # Remove old zip and Download
+    # Remove old zip if any and download
     Write-Host "> Downloading bundle"
     Get-ChildItem "tools" | Where{$_.Name -Match ".*win[.]zip$"} | Remove-Item
-    Invoke-WebRequest -uri $zip.download_url -Method "GET"  -Outfile (Join-Path "tools" $zip.name) 
+    Invoke-WebRequest -uri $zip.download_url -Method "GET"  -Outfile (Join-Path "tools" $zip.name)
 
 
     # Create choco package
-    Write-Host "> Creating new nupkg file"
-    choco pack
+    Write-Host "> Creating nupkg file for version $NewVersion"
+    choco pack -v
 
 
     return $res
