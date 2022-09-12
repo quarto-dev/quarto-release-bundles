@@ -18,16 +18,12 @@ jobs:
     - name: Clone repo
       uses: actions/checkout@v3
 
-    - name: Install Chocolatey Automatic Package Updater Module
-      run: |
-        choco install -y au
-
     - name: Update Package
-      working-directory: quarto
+      working-directory: chocolatey
       run: |
        $res=.\update.ps1
        Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
-       Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_NEW_VERSION=$($res.RemoteVersion | ConvertTo-Json)"
+       Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_NEW_VERSION=$($res.NewVersion | ConvertTo-Json)"
 
     - name: Commit Updated Spec
       if: ${{ fromJSON(env.CHOCO_UPDATE) }}
@@ -38,10 +34,11 @@ jobs:
         git push origin || echo "No changes to commit"
 
     - name: Publish Choco Package
-      working-directory: quarto
+      working-directory: choco
       env: 
-        api_key: ${{ secrets.CHOCO_KEY }}
+        CHOCO_KEY: ${{ secrets.CHOCO_KEY }}
       if: ${{ fromJSON(env.CHOCO_UPDATE) && inputs.publish }}
       run: |
         echo "deploying to chocolatey"
-        Push-Package
+        choco apikey --key $Env:CHOCO_KEY --source https://push.chocolatey.org/
+        choco push --source https://push.chocolatey.org/
