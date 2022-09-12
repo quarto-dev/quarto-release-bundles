@@ -28,6 +28,8 @@ function updateAndBuild() {
 
     # Update nuspec
 
+    $NuSpecFile = "quarto.nuspec"
+
     try
     {
 
