@@ -12,17 +12,10 @@ After installing the chocolatey package, `quarto` will be available in PATH than
 
 - This package contains the `nuspec` file for the quarto bundle to publish to <https://community.chocolatey.org>
 
-- A new bundle is to be built for Chocolatey at each stable release. 
+- A new bundle is to be built for Chocolatey at each stable release. The release process to <https://community.chocolatey.org/packages/quarto/> is manually trigger with the Github Action workflow.
 
-- [Chocolatey Automatic Package Updater Module](https://github.com/majkinetor/au) is used to automate the process: 
+- Files are stored in `chocolatey` directory: 
+  - `update.ps1` will fetch the new information, updtate the required file and build a new `.nupkg`
+  - Other files are to be included in the bundle. 
 
-  - Checking if a new version is available
-  - If so, update the file that requires new value based on new version 
-  - and create a new package to publish
-
-  This happens in `update.ps1`. 
-
-  _This tools currently contraints the repo to have a quarto folder with the `.nuspec`._
-
-
-- A github action workflow is here to ease the above process and publish to the community repo is needed. 
+- A github action workflow is here to ease the above process and publish to the community repo.
