@@ -4,13 +4,50 @@ function updateAndBuild() {
 
     $res = @{}
 
+    Write-Host "> Fetching new version information"
     $releases_url = 'https://quarto.org/docs/download/_download.json'
     $release_info = Invoke-WebRequest $releases_url | ConvertFrom-Json
 
     $zip = $release_info.assets |  Where-Object {$_.name -Match "win.zip$"}
 
-    # Replace information in document
+    # Update nuspec file
+    $NuSpecFile = Resolve-Path "quarto.nuspec"
+    try
+    {
 
+        [xml]$xml = (Get-Content -path $NuSpecFile -Raw)
+        $ns = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $ns.AddNamespace('nuspec', 'http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd')
+
+        [version]$Version = [version]::parse($xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText)
+        [version]$NewVersion = [version]::parse($release_info.version)
+
+        Write-Host "> Current: $Version - New: $NewVersion"
+
+        if ($NewVersion -le $Version) {
+            $res.Updated = $false
+            Write-Host -ForegroundColor DarkBlue "  > No new version"
+            Exit
+        }
+        Write-Host -ForegroundColor DarkBlue "  > New version found"
+        $res.Updated = $true
+        $res.NewVersion = $NewVersion.ToString()
+
+        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
+        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:releaseNotes', $ns).InnerText = $release_info.description
+
+        Write-Host "> Updating Nuspec file $NuSpecFile"
+        $xml.Save("$NuSpecFile")
+    }
+    catch
+    {
+        $res.Updated = $false
+        Write-Host -ForegroundColor DarkRed "   > Issue with writing XML"
+        throw
+    }
+
+    # Replace information in document
+    Write-Host "> Updating tools files"
     function SearchReplace {
         param (
             # Path to file to search and replace
@@ -26,47 +63,14 @@ function updateAndBuild() {
     SearchReplace ".\legal\VERIFICATION.txt" "(?i)(\s+bundle:).*" "`${1} $($zip.download_url)"
     SearchReplace ".\legal\VERIFICATION.txt" "(?i)(checksum:).*" "`${1} $($zip.checksum)"
 
-    # Update nuspec
-
-    $NuSpecFile = "quarto.nuspec"
-
-    try
-    {
-
-        [xml]$xml = Get-Content -path $NuSpecFile -Raw
-        $ns = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
-        $ns.AddNamespace('nuspec', 'http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd')
-
-        [version]$Version = [version]::parse($xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText)
-        [version]$NewVersion = [version]::parse($release_info.version)
-
-        if ($NewVersion -le $Version) {
-            $res.Updated = $false
-            Write-Host -ForegroundColor DarkBlue "No new version"
-            Exit
-        }
-
-        $res.Updated = $true
-        $res.NewVersion = $NewVersion.ToString()
-
-        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
-        $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:description', $ns).InnerText = $release_info.description
-
-        $xml.Save($NuSpecFile)
-    }
-    catch
-    {
-        $res.Updated = $false
-        Write-Host -ForegroundColor DarkRed "Issue with writing XML"
-        throw
-    }
-
     # Remove old zip and Download
+    Write-Host "> Downloading bundle"
     Get-ChildItem "tools" | Where{$_.Name -Match ".*win[.]zip$"} | Remove-Item
     Invoke-WebRequest -uri $zip.download_url -Method "GET"  -Outfile (Join-Path "tools" $zip.name) 
 
 
     # Create choco package
+    Write-Host "> Creating new nupkg file"
     choco pack
 
 
