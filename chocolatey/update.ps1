@@ -47,7 +47,7 @@ function updateAndBuild() {
         }
 
         $res.Updated = $true
-        $res.NewVersion = $NewVersion
+        $res.NewVersion = $NewVersion.ToString()
 
         $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
         $xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:description', $ns).InnerText = $release_info.description
