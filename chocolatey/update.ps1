@@ -21,7 +21,7 @@ function updateAndBuild() {
 
         [version]$Version = [version]::parse($xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText)
         [version]$NewVersion = [version]::parse($release_info.version)
-        res.NewVersion = $NewVersion.ToString()
+        $res.NewVersion = $NewVersion.ToString()
 
         Write-Host "> Current: $Version - New: $NewVersion"
 
