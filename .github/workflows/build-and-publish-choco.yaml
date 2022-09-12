@@ -13,17 +13,26 @@ jobs:
   build-windows:
     runs-on: windows-latest
     name: Build chocolatey package
+    
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: chocolatey
 
     steps:
     - name: Clone repo
       uses: actions/checkout@v3
 
     - name: Update Package
-      working-directory: chocolatey
       run: |
        $res=.\update.ps1
        Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_UPDATE=$($res.Updated | ConvertTo-Json)"
        Add-Content -Path $env:GITHUB_ENV -Value "CHOCO_NEW_VERSION=$($res.NewVersion | ConvertTo-Json)"
+
+    - name: Test package 
+      run: |
+        choco install --no-progress quarto -source .
+        choco uninstall -y quarto
 
     - name: Commit Updated Spec
       if: ${{ fromJSON(env.CHOCO_UPDATE) }}
@@ -34,7 +43,6 @@ jobs:
         git push origin || echo "No changes to commit"
 
     - name: Publish Choco Package
-      working-directory: choco
       env: 
         CHOCO_KEY: ${{ secrets.CHOCO_KEY }}
       if: ${{ fromJSON(env.CHOCO_UPDATE) && inputs.publish }}
