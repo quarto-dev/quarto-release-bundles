@@ -1,36 +1,49 @@
-import-module au
+# Get latest release info
+$releases_url = 'https://quarto.org/docs/download/_download.json'
+$release_info = Invoke-WebRequest $releases_url | ConvertFrom-Json
 
-$releases = 'https://quarto.org/docs/download/_download.json'
-function global:au_SearchReplace {
-    @{
-       ".\legal\VERIFICATION.txt" = @{
-          "(?i)(\s+bundle:).*"      = "`${1} $($Latest.URL64)"
-          "(?i)(checksum:).*"          = "`${1} $($Latest.Checksum64)"
-        }
+$zip = $release_info.assets |  Where-Object {$_.name -Match "win.zip$"}
 
-        "$($Latest.PackageName).nuspec" = @{
-            "(\<releaseNotes\>).*?(\</releaseNotes\>)" = "`${1}$($Latest.ReleaseNotes)`$2"
-        }
+# Replace information in document
 
-     }
+function SearchReplace {
+    param (
+        # Path to file to search and replace
+        [string] $File, 
+        # Pattern to search for
+        [string] $Search, 
+        # Pattern to replace
+        [string] $Replace
+    )
+    (Get-Content $File) | % {$_ -replace $Search, $Replace } | Set-Content $File
 }
 
-function global:au_BeforeUpdate { Get-RemoteFiles -Purge -NoSuffix }
+SearchReplace ".\legal\VERIFICATION.txt" "(?i)(\s+bundle:).*" "`${1} $($zip.download_url)"
+SearchReplace ".\legal\VERIFICATION.txt" "(?i)(checksum:).*" "`${1} $($zip.checksum)"
 
-function global:au_GetLatest {
-    $bundles = Invoke-WebRequest -Uri $releases | ConvertFrom-Json
+# Update nuspec
 
-    $zip = $bundles.assets |  Where-Object {$_.name -Match "win.zip$"}
+[xml]$xml = Get-Content -path $NuSpecFile -Raw
+$ns = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
 
-    $url     = $zip.download_url
-    $version = $zip.name -split '-' | select -Index 1
+[version]$Version = [version]::parse($xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText)
+[version]$NewVersion = [version]::parse($release_info.version)
 
-    return @{
-        Version = $version
-        URL64 = $zip.download_url
-        Checksum64 = $zip.checksum
-        ReleaseNotes = "https://github.com/quarto-dev/quarto-cli/releases/tag/v$version"
-    }
+if ($NewVersion -le $Version) {
+    Write-Host -ForegroundColor DarkBlue "No new version"
+    Exit
 }
 
-update -ChecksumFor none -NoReadme
+$xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:version', $ns).InnerText = $NewVersion.ToString()
+$xml.SelectSingleNode('/nuspec:package/nuspec:metadata/nuspec:description', $ns).InnerText = $release_info.description
+
+$xml.Save($NuSpecFile)
+
+# Remove old zip and Download
+Get-ChildItem "tools" | Where{$_.Name -Match ".*win[.]zip$"} | Remove-Item
+Invoke-WebRequest -uri $zip.download_url -Method "GET"  -Outfile (Join-Path "tools" $zip.name) 
+
+
+# Create choco package
+choco pack
+

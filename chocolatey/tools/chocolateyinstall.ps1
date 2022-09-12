@@ -11,9 +11,7 @@ $packageArgs = @{
 Get-ChocolateyUnzip @packageArgs
 rm $toolsDir\*.zip -ea 0
 
-$files = get-childitem $toolsDir -include *.exe -recurse
+$files = get-childitem (Join-Path $toolsDir "bin/tools" ) -include *.exe -recurse
 foreach ($file in $files) {
     New-Item "$file.ignore" -type file -force | Out-Null
 }
-
-Install-BinFile -Name $env:ChocolateyPackageName -Path $(Join-Path $(Join-Path $toolsDir "bin") "quarto.cmd")
