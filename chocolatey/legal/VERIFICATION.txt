@@ -6,6 +6,6 @@ This chocolatey package is maintained directly by Quarto authors <https://quarto
 
 Verification can be done this this way: 
 
-- Downloaded bundle: https://github.com/quarto-dev/quarto-cli/releases/download/v1.2.335/quarto-1.2.335-win.zip
+- Downloaded bundle: https://github.com/quarto-dev/quarto-cli/releases/download/v1.2.475/quarto-1.2.475-win.zip
 
-- Use 'Get-FileHash' to check the checksum: 0c8b3702482b1dd4830cfd6bc1d427b808364a91645658166d25962988255813
+- Use 'Get-FileHash' to check the checksum: 5870b74d4cc95071ad0372f53a44f51a7c37b565b5402075f0d08fb97469314f
