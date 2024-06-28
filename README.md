@@ -1,11 +1,10 @@
 ﻿# Quarto releases to package managers
 
-- [Quarto releases to package managers](#quarto-releases-to-package-managers)
-  - [Chocolatey package for Quarto](#chocolatey-package-for-quarto)
-  - [Winget package for Quarto](#winget-package-for-quarto)
-  - [Scoop package for Quarto](#scoop-package-for-quarto)
-  - [Conda feedstock for Quarto](#conda-feedstock-for-quarto)
-  - [Pypi quarto-cli version](#pypi-quarto-cli-version)
+- [Chocolatey package for Quarto](#chocolatey-package-for-quarto)
+- [Winget package for Quarto](#winget-package-for-quarto)
+- [Scoop package for Quarto](#scoop-package-for-quarto)
+- [Conda feedstock for Quarto](#conda-feedstock-for-quarto)
+- [Pypi quarto-cli version](#pypi-quarto-cli-version)
 
 ## Chocolatey package for Quarto
 
