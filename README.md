@@ -33,6 +33,8 @@ After installing the chocolatey package, `quarto` will be available in PATH than
 Due to limitation (see #1), the winget package is manually created an deployed from a fork of official repo <https://github.com/microsoft/winget-pkgs>. 
 Manifest lives at <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Posit/Quarto>.
 
+The manifests updates are done by community and not Quarto Team. Usually once we release on `quarto-cli` repo, it will be seen and trigger automated PR creating set up by some users. As of 06/2024, this done by <https://github.com/SpecterShell/Dumplings> automation. ([PR example for 1.4.557](https://github.com/microsoft/winget-pkgs/pull/160399))
+
 ## Scoop package for Quarto
 
 Scoop (<https://scoop.sh/>) manifest are in pull-mode. Manifest for Quarto is [Extras bucket](https://github.com/ScoopInstaller/Extras/blob/master/bucket/quarto.json) and automatically updated. 
