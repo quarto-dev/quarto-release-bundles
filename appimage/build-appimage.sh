@@ -23,7 +23,7 @@ get_current_release_build() {
     wget --output-document "quarto-release.tar.gz" $myurl
 }
 
-extract_relase_build() {
+extract_release_build() {
     echo "Extracting latest release build."
 
     mkdir -p "quarto-release"
@@ -68,7 +68,7 @@ build_appimage() {
 }
 
 get_current_release_build
-extract_relase_build
+extract_release_build
 get_appimage_builder
 prepare_appimage
 build_appimage
