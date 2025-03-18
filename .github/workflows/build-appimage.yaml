@@ -1,0 +1,51 @@
+#on: workflow_dispatch
+on: push
+
+name: Build AppImage package
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-latest
+    name: Build AppImage package
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Install necessary packages
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install desktop-file-utils
+
+      - name: Build AppImage
+        env:
+          TARGET_ARCH: amd64
+        run: |
+          bash ./appimage/build-appimage.sh
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Quarto-amd64.AppImage
+          path: Quarto-amd64.AppImage
+
+  test-appimage:
+    runs-on: ubuntu-latest
+    name: Test Appimage Package
+    needs: build-appimage
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Quarto-amd64.AppImage
+          path: .
+
+      - run: |
+          mv Quarto-amd64.AppImage quarto
+          chmod a+x quarto
+
+      - run: |
+          ls -lR
+          ./quarto check
+          ./quarto --paths
+          ./quarto --version
