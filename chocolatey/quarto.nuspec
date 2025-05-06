@@ -3,7 +3,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
-    <version>1.7.29</version>
+    <version>1.7.30</version>
     <packageSourceUrl>https://github.com/quarto-dev/quarto-release-bundles</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
@@ -27,7 +27,15 @@
 * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
 * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 </description>
-    <releaseNotes>All changes included in 1.7:
+    <releaseNotes># v1.8 backports
+
+## In this release
+
+- ([#6607](https://github.com/quarto-dev/quarto-cli/issues/6607)): Add missing beamer template update for beamer theme options: `colorthemeoptions`, `fontthemeoptions`, `innerthemeoptions` and `outerthemeoptions`.
+- ([#12625](https://github.com/quarto-dev/quarto-cli/pull/12625)): Fire resize event on window when light/dark toggle is clicked, to tell widgets to resize.
+- ([#12657](https://github.com/quarto-dev/quarto-cli/pull/12657)): Load Giscus in generated script tag, to avoid wrong-theming in Chrome.
+
+# v1.7 changes
 
 ## Regression fixes
 
