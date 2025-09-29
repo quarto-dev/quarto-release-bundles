@@ -3,7 +3,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
-    <version>1.8.24</version>
+    <version>1.8.25</version>
     <packageSourceUrl>https://github.com/quarto-dev/quarto-release-bundles</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
@@ -27,7 +27,17 @@
 * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
 * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 </description>
-    <releaseNotes>All changes included in 1.8:
+    <releaseNotes># v1.9 backports
+
+## In this release
+
+- ([#13369](https://github.com/quarto-dev/quarto-cli/issues/13369)): Fix failure in theme compilation when `brand.color.primary` is specified for light or dark but not both.
+- ([#13383](https://github.com/quarto-dev/quarto-cli/issues/13383)): Fix failure when combining `minimal: true` with brand.yml.
+- ([#13396](https://github.com/quarto-dev/quarto-cli/issues/13396)): Fix `quarto publish connect` regression.
+- ([#13418](https://github.com/quarto-dev/quarto-cli/issues/13418)): Resolve logo paths specified directly in `brand.logo.{size}`.
+- ([#13445](https://github.com/quarto-dev/quarto-cli/pull/13445)): Brand logo shortcode will not add `.light-content`, `.dark-content` classes when `light` or `dark` is specifically requested.
+
+# v1.8 changes
 
 ## Regression fixes
 
@@ -36,6 +46,8 @@
 - ([#12657](https://github.com/quarto-dev/quarto-cli/pull/12657)): Load Giscus in generated script tag, to avoid wrong-theming in Chrome.
 - ([#12780](https://github.com/quarto-dev/quarto-cli/issues/12780)): `keep-ipynb: true` now works again correctly and intermediate `.quarto_ipynb` is not removed.
 - ([#13051](https://github.com/quarto-dev/quarto-cli/issues/13051)): Fixed support for captioned Markdown table inside Div syntax for crossref. This is special handling, but this could be output by function like `knitr::kable()` with old option support.
+- ([#13441](https://github.com/quarto-dev/quarto-cli/pull/13441)): Catch `undefined` exceptions in Pandoc failure to avoid spurious error message.
+- ([#13456](https://github.com/quarto-dev/quarto-cli/pull/13456)): Ensure that the `axe` YAML completion only appears in HTML formats.
 
 ## Backwards-compatibility breaking changes
 
