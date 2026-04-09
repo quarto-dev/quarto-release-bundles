@@ -3,7 +3,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
-    <version>1.9.36</version>
+    <version>1.9.37</version>
     <packageSourceUrl>https://github.com/quarto-dev/quarto-release-bundles</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
@@ -27,7 +27,21 @@
 * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
 * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 </description>
-    <releaseNotes>All changes included in 1.9:
+    <releaseNotes># v1.10 backports
+
+## In this release
+
+- ([#14267](https://github.com/quarto-dev/quarto-cli/issues/14267)): Fix Windows paths with accented characters (e.g., `C:\Users\S??bastien\`) breaking dart-sass compilation.
+- ([#14281](https://github.com/quarto-dev/quarto-cli/issues/14281)): Fix transient `.quarto_ipynb` files accumulating during `quarto preview` with Jupyter engine.
+- ([#14298](https://github.com/quarto-dev/quarto-cli/issues/14298)): Fix `quarto preview` browse URL including output filename (e.g., `hello.html`) for single-file documents, breaking Posit Workbench proxied server access.
+- ([rstudio/rstudio#17333](https://github.com/rstudio/rstudio/issues/17333)): Fix `quarto inspect` on standalone files emitting project metadata that breaks RStudio's publishing wizard.
+- ([#14334](https://github.com/quarto-dev/quarto-cli/pull/14334), [#9710](https://github.com/quarto-dev/quarto-cli/issues/9710)): Add arm64 Linux support for `quarto install chrome-headless-shell` using Playwright CDN as download source. `quarto install chromium` and `quarto update chromium` now show a deprecation warning ??? use `chrome-headless-shell` instead, which always installs the latest stable Chrome (the legacy `chromium` installer pins an outdated Puppeteer revision that cannot receive security updates). `quarto check install` also warns when legacy Chromium is detected.
+
+## In previous releases
+
+# v1.9 changes
+
+All changes included in 1.9:
 
 ## Shortcodes
 
@@ -108,12 +122,13 @@
 - ([#13775](https://github.com/quarto-dev/quarto-cli/issues/13775)): Fix brand fonts not being applied when using `citeproc: true` with Typst format. Format detection now properly handles Pandoc format variants like `typst-citations`.
 - ([#13868](https://github.com/quarto-dev/quarto-cli/issues/13868)): Add image alt text support for PDF/UA accessibility. Alt text from markdown captions and explicit `alt` attributes is now passed to Typst's `image()` function. (Temporary workaround until [jgm/pandoc#11394](https://github.com/jgm/pandoc/pull/11394) is merged.)
 - ([#13870](https://github.com/quarto-dev/quarto-cli/issues/13870)): Add support for `alt` attribute on cross-referenced equations for improved accessibility. (author: @mcanouil)
+- ([#13878](https://github.com/quarto-dev/quarto-cli/issues/13878)): Typst now uses Pandoc's skylighting for syntax highlighting by default (consistent with other formats). Use `syntax-highlighting: idiomatic` to opt-in to Typst's native syntax highlighting instead.
+- ([#13879](https://github.com/quarto-dev/quarto-cli/pull/13879)): Add Tufte-style margin layout for Typst using the marginalia package. Supports `.column-margin` for margin notes, figures, tables, and captions; `.column-screen` and `.column-page` for full-width content; `citation-location: margin`; `reference-location: margin` for sidenotes; `suppress-bibliography`; `cap-location: margin`, `fig-cap-location: margin`, and `tbl-cap-location: margin`; `grid` options (`margin-width`, `body-width`, `gutter-width`); and `margin-geometry` for fine-grained layout control.
 - ([#13917](https://github.com/quarto-dev/quarto-cli/issues/13917)): Fix brand logo paths not resolving correctly for Typst documents in project subdirectories. Brand logo paths are now converted to project-absolute paths before merging with document metadata, replacing the fragile `projectOffset()` workaround.
 - ([#13942](https://github.com/quarto-dev/quarto-cli/issues/13942)): Fix Typst compilation errors showing confusing internal stack traces. Users now see only the relevant Typst error message.
 - ([#13950](https://github.com/quarto-dev/quarto-cli/pull/13950)): Replace ctheorems with theorion package for theorem environments. Add `theorem-appearance` option to control styling: `simple` (default, classic LaTeX style), `fancy` (colored boxes with brand colors), `clouds` (rounded backgrounds), or `rainbow` (colored start border and colored title).
 - ([#13954](https://github.com/quarto-dev/quarto-cli/issues/13954)): Add support for Typst book projects via format extensions. Quarto now bundles the `orange-book` extension which provides a textbook-style format with chapter numbering, cross-references, and professional styling. Book projects with `format: typst` automatically use this extension.
 - ([#13978](https://github.com/quarto-dev/quarto-cli/pull/13978)): Keep term and description together in definition lists to avoid breaking across pages. (author: @mcanouil)
-- ([#13878](https://github.com/quarto-dev/quarto-cli/issues/13878)): Typst now uses Pandoc's skylighting for syntax highlighting by default (consistent with other formats). Use `syntax-highlighting: idiomatic` to opt-in to Typst's native syntax highlighting instead.
 - ([#14126](https://github.com/quarto-dev/quarto-cli/issues/14126)): Fix Skylighting code blocks in Typst lacking full-width background, padding, and border radius. A postprocessor patches the Pandoc-generated Skylighting function to add `width: 100%`, `inset: 8pt`, and `radius: 2pt` to the block call, matching the styling of native code blocks. Brand `monospace-block.background-color` also now correctly applies to Skylighting output. This workaround will be removed once the fix is upstreamed to Skylighting.
 - ([#14202](https://github.com/quarto-dev/quarto-cli/issues/14202)): Fix CSS inlining (`juice`) failing on Windows when Quarto is installed in a path with spaces (e.g., `C:\Program Files\Quarto\`).
 
@@ -134,6 +149,7 @@
   - New `pdf-trailer-id` support for reproducible PDF builds.
   - New `cancel` package support for `\cancel` command in math.
 - ([#14017](https://github.com/quarto-dev/quarto-cli/issues/14017)): `tColorOptions()` in .tex file will now always have options in alphabetical order. Previously, they were in random order leading to a different .tex intermediates for identical .qmd.
+- ([#14241](https://github.com/quarto-dev/quarto-cli/pull/14241)): Add `QUARTO_PDF_STANDARD` environment variable as a fallback for the `pdf-standard` option. Accepts comma-separated values (e.g., `QUARTO_PDF_STANDARD=ua-2`), enabling PDF standard conformance without modifying document YAML. Works with both LaTeX and Typst formats.
 
 ### `revealjs`
 
