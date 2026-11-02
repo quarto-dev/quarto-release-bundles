@@ -3,7 +3,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>quarto</id>
-    <version>1.10.20</version>
+    <version>1.11.9</version>
     <packageSourceUrl>https://github.com/quarto-dev/quarto-release-bundles</packageSourceUrl>
     <owners>Christophe Dervieux</owners>
     <!-- ============================== -->
@@ -27,165 +27,231 @@
 * Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more. 
 * Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 </description>
-    <releaseNotes># v1.11 backports
-
-## In this release
-
-- ([#14936](https://github.com/quarto-dev/quarto-cli/pull/14936)): Accept and ignore static engine declaration keys (`name`, `claims`, `file-extensions`, `claims-files` ??? including an optional `processor` on `claims-files` entries) in the `external-engine` schema, so extensions can declare them for Quarto 2's engine resolution without breaking Quarto 1 validation. No Quarto 1 behavior change.
-- ([#15143](https://github.com/quarto-dev/quarto-cli/issues/15143)): Fix PDF rendering with `pdf-standard` failing with `\DocumentMetadata not supported!` after updating to KOMA-Script 3.49.3, which provides the default document classes.
-
-## In previous releases
-
-- ([#14920](https://github.com/quarto-dev/quarto-cli/issues/14920)): Correct the Windows ARM diagnostic for x64 R crashes with stable native ARM64 R installation guidance, including reinstalling packages and configuring `QUARTO_R`.
-- ([#14731](https://github.com/quarto-dev/quarto-cli/pull/14731)): Fix `QUARTO_VENDOR_BINARIES=false` builds silently succeeding with missing binaries. The `configure` step's "is it on PATH?" check for `typst-gather`, `typst`, `pandoc` and `esbuild` compared an unawaited `Promise` against `undefined`, so the guard never fired. A build with `typst-gather` neither vendored nor on PATH reported success and produced a Quarto tree without it, surfacing only at render time as `typst-gather analyze failed; staging all packages as fallback`. The missing-binary error message now also names the path that was checked and the `QUARTO_TYPST_GATHER` environment variable.
-- ([#14741](https://github.com/quarto-dev/quarto-cli/issues/14741)): Fix PDF rendering of a cross-referenced table failing with `! Extra }, or forgotten \endgroup.` when the `endfloat` package defers `longtable` environments (`\DeclareDelayedFloatFlavor*{longtable}{table}`).
-- ([#14857](https://github.com/quarto-dev/quarto-cli/issues/14857)): Fix `quarto install chrome-headless-shell` (and `quarto install chromium`) failing with a 404 on Linux arm64 due to a stale Playwright CDN URL.
-- ([#14993](https://github.com/quarto-dev/quarto-cli/issues/14993)): Fix Typst output dropping a brand font from a `font-family` list when another document in the same directory or project was rendered first with different brand fonts.
-
-# v1.10 changes
-
-All changes included in 1.10:
+    <releaseNotes>All changes included in 1.11:
 
 ## Regression fixes
 
-- ([#13583](https://github.com/quarto-dev/quarto-cli/issues/13583)): Fix "Show All Code" and "Hide All Code" in the `code-tools` menu doing nothing when `code-copy` is enabled. (author: @mcanouil)
-- ([#14267](https://github.com/quarto-dev/quarto-cli/issues/14267)): Fix Windows paths with accented characters (e.g., `C:\Users\S??bastien\`) breaking dart-sass compilation.
-- ([#14281](https://github.com/quarto-dev/quarto-cli/issues/14281)): Fix transient `.quarto_ipynb` files accumulating during `quarto preview` with Jupyter engine.
-- ([#14298](https://github.com/quarto-dev/quarto-cli/issues/14298)): Fix `quarto preview` browse URL including output filename (e.g., `hello.html`) for single-file documents, breaking Posit Workbench proxied server access.
-- ([#14489](https://github.com/quarto-dev/quarto-cli/issues/14489)): Restore `--output-dir` support for `quarto preview` of single files when no `_quarto.yml` is present (e.g. R-package workspaces). Regression introduced in v1.9.18.
-- ([#14683](https://github.com/quarto-dev/quarto-cli/issues/14683)): Fix `quarto preview` of a knitr document in a project subdirectory failing when run from that subdirectory with a bare filename (the shape RStudio's Render button uses). Regression introduced in v1.9.18.
-- ([rstudio/rstudio#17333](https://github.com/rstudio/rstudio/issues/17333)): Fix `quarto inspect` on standalone files emitting project metadata that breaks RStudio's publishing wizard.
+- ([#13669](https://github.com/quarto-dev/quarto-cli/issues/13669)): Fix the copy button of the BibTeX citation in the HTML appendix showing no icon and being placed outside the code block (regression introduced in v1.8.15). (author: @AJBogo9)
+- ([#14731](https://github.com/quarto-dev/quarto-cli/pull/14731)): Fix `QUARTO_VENDOR_BINARIES=false` builds silently succeeding when required binaries are missing from PATH; configuration now reports the missing binary and the path checked.
+- ([#14741](https://github.com/quarto-dev/quarto-cli/issues/14741)): Fix PDF rendering of a cross-referenced table failing with `! Extra }, or forgotten \endgroup.` when the `endfloat` package defers `longtable` environments (`\DeclareDelayedFloatFlavor*{longtable}{table}`).
+- ([#14857](https://github.com/quarto-dev/quarto-cli/issues/14857)): Fix `quarto install chrome-headless-shell` (and `quarto install chromium`) failing with a 404 on Linux arm64 due to a stale Playwright CDN URL.
+- ([#14920](https://github.com/quarto-dev/quarto-cli/issues/14920)): Fix Windows ARM diagnostics for x64 R crashes to preserve the specialized error in `quarto check`, JSON output, and render failures, and update the native ARM64 R installation guidance.
+- ([#14946](https://github.com/quarto-dev/quarto-cli/issues/14946)): Fix `revealjs` and `dashboard` logos resolving to broken paths in documents in a project subdirectory when the project has a brand (regression introduced in v1.8.22). Logo paths are now always relative to the document; a project-relative logo path in a website with a brand still works but prints a deprecation warning.
+- ([#14993](https://github.com/quarto-dev/quarto-cli/issues/14993)): Fix Typst output dropping a brand font from a `font-family` list when another document in the same directory or project was rendered first with different brand fonts.
+- ([#15143](https://github.com/quarto-dev/quarto-cli/issues/15143)): Fix PDF rendering with `pdf-standard` failing with `\DocumentMetadata not supported!` after updating to KOMA-Script 3.49.3, which provides the default document classes.
 
 ## Dependencies
 
-- ([#14291](https://github.com/quarto-dev/quarto-cli/issues/14291)): Update `deno` to v2.7.14 (fixes silent crash on Windows builds older than 16299).
-- ([#14664](https://github.com/quarto-dev/quarto-cli/issues/14664)): Update more dependencies:
-  - Update `pandoc` to 3.10.
-  - Update `typst` to 0.15.1.
-  - Update `typst-gather` to 0.2.3.
-  - Update `dart-sass` to 1.101.0.
-  - Update `esbuild` to 0.28.1.
-- ([#14677](https://github.com/quarto-dev/quarto-cli/pull/14677)): Bundle `axe-core` 4.10.3 (used by the `axe` HTML accessibility option), previously loaded at runtime from the Skypack CDN.
+- ([#15043](https://github.com/quarto-dev/quarto-cli/issues/15043)): Update the OJS runtime to acorn 8.17, Observable Inspector 5.0.1, and Observable Inputs 0.10.6. `FileAttachment(...).mimeType` now reports `text/javascript` instead of `application/javascript` for `.js` and `.mjs` files.
+- ([#15152](https://github.com/quarto-dev/quarto-cli/issues/15152)): Update `deno` to v2.9.8 to reject certificates from the compromised eMudhra / emSign certificate authorities, protecting HTTPS requests made by Quarto commands and TypeScript scripts. The bundled Deno now requires macOS 12 (Monterey) or later.
+- ([#15184](https://github.com/quarto-dev/quarto-cli/pull/15184)): Update the preview UI's Fluent UI components to 9.74.10 and icons to 2.0.344.
 
 ## Accessibility
 
-- ([#14468](https://github.com/quarto-dev/quarto-cli/issues/14468)): The `axe` accessibility report UI (HTML overlay, revealjs report slide, dashboard offcanvas) now uses its own theme-independent colors instead of inheriting from `brand` or theme. Keeps the report readable regardless of page styling, and stops `axe` from clobbering brand colors set via `_brand.yml`.
-- ([#14602](https://github.com/quarto-dev/quarto-cli/pull/14602), [#14632](https://github.com/quarto-dev/quarto-cli/pull/14632)): Fix ORCID profile link having no accessible name for screen readers in HTML, Reveal.js, and ipynb title-block author metadata. (author: @mcanouil for #14602)
-- ([#14604](https://github.com/quarto-dev/quarto-cli/issues/14604)): The `axe` accessibility report UI now shows each violation's WCAG conformance level (e.g. `WCAG 2.0 AA (1.4.3)`) or `Best Practice`, derived from the violation's axe-core tags.
-- ([#14607](https://github.com/quarto-dev/quarto-cli/issues/14607)): Add `standard` and `best-practice` options to `axe`. `standard` scopes accessibility checks to a WCAG conformance level (e.g. `standard: wcag21aa`), including the rules axe-core keeps off by default for that level (such as AAA color contrast); `best-practice` controls whether axe's best-practice rules (recommendations not required by any WCAG success criterion) are checked.
-- ([#14655](https://github.com/quarto-dev/quarto-cli/issues/14655)): Add accessible names to code line-number links so screen readers and accessibility audits no longer report them as empty links.
-- ([#14676](https://github.com/quarto-dev/quarto-cli/pull/14676)): The `axe` accessibility report UI now lists violations most-important-first: by impact (critical first), then WCAG conformance level (A before AA, current criteria before Best Practice and obsolete ones), then rule id. `output: json` still emits axe-core's raw, unsorted result.
-- ([#14677](https://github.com/quarto-dev/quarto-cli/pull/14677)): The `axe` option now uses a copy of axe-core bundled with Quarto instead of loading it from the Skypack CDN in the reader's browser. Accessibility checking now works offline, and viewing a rendered document no longer triggers a request to `cdn.skypack.dev`. The axe-core version is unchanged (4.10.3), so scan results are identical.
-- ([#14680](https://github.com/quarto-dev/quarto-cli/pull/14680)): Fix the `axe` accessibility report overlay inheriting page-level text centering (e.g. from the `jolla` about template) in HTML output; the overlay is now always left-aligned.
-- ([#14680](https://github.com/quarto-dev/quarto-cli/pull/14680)): Fix hovering a selector in the `axe` accessibility report overlay scrolling the highlighted element underneath the overlay; the element now settles in the viewport area above the report.
-- ([#14680](https://github.com/quarto-dev/quarto-cli/pull/14680)): Fix the `axe` accessibility report overlay in HTML output failing axe's own `scrollable-region-focusable` rule: a report long enough to scroll could not be scrolled by keyboard. The overlay is now a focusable, labeled region.
+- ([#730](https://github.com/quarto-dev/quarto-cli/issues/730)): Fix keyboard navigation of tabsets in HTML documents without Bootstrap (`theme: none`): Tab now moves from the selected tab into its panel instead of selecting the next tab, and the arrow keys switch tabs.
+- ([#3873](https://github.com/quarto-dev/quarto-cli/issues/3873), [#9003](https://github.com/quarto-dev/quarto-cli/issues/9003)): Honor `fig-alt` for Mermaid and Graphviz diagrams in HTML, revealjs, DOCX, and Typst output while preserving visible captions. (author: @jooyoungseo)
+- ([#5514](https://github.com/quarto-dev/quarto-cli/issues/5514)): Fix `fig-alt` being ignored in `docx` output. Images and figures, including computational figures, now use it as their Word alternative text instead of the caption or an empty description, and the visible caption is unchanged. (author: @jooyoungseo)
+- ([#7058](https://github.com/quarto-dev/quarto-cli/issues/7058)): Move the navbar search control after the navigation links and tools in the DOM so keyboard and screen-reader order matches the visual order. The rendered layout is unchanged (navbar positioning is controlled by CSS `order`), but custom CSS or JS that relied on `#quarto-search` preceding the navbar links in the DOM may need updating.
+- ([#9469](https://github.com/quarto-dev/quarto-cli/pull/9469)): Announce links that `link-external-newwindow` opens in a new tab to screen readers, with an "(opens in a new tab)" description that leaves the link name unchanged and can be translated with the `link-external-newwindow-label` language key. (author: @mcanouil)
+- ([#9469](https://github.com/quarto-dev/quarto-cli/pull/9469)): Hide the empty thumbnail link of default listing items that have no image and no file, such as external items listed in `contents:`, from assistive technology and the tab order, as [#15066](https://github.com/quarto-dev/quarto-cli/issues/15066) already does for posts. (author: @mcanouil)
+- ([#12116](https://github.com/quarto-dev/quarto-cli/issues/12116), [#4935](https://github.com/quarto-dev/quarto-cli/issues/4935)): Website sidebar section toggles are now `&lt;button&gt;` elements, so they are keyboard accessible and properly announced.
+- ([#13463](https://github.com/quarto-dev/quarto-cli/issues/13463)): The dark/light mode toggle is now a switch (`button` with `role="switch"`, `aria-checked`, and a localized `aria-label`) instead of a link.
+- ([#14249](https://github.com/quarto-dev/quarto-cli/issues/14249)): Fix the `revealjs` slide menu button having no accessible name for screen readers. The name can be translated with the `revealjs-menu-button-label` language key. (author: @mcanouil)
+- ([#14376](https://github.com/quarto-dev/quarto-cli/issues/14376)): Add a distinct, localizable `aria-label` to each navigation landmark of websites and books: the navbar (`Site`), the sidebar (`Section`, or `Site` when there is no navbar), the narrow-viewport toolbar (`Toolbar`), the previous/next page navigation (`Page`), and the breadcrumbs (`Breadcrumbs`) (previously hardcoded English `breadcrumb`). The new `navigation-*-label` language keys can be overridden with `language:` metadata.
+- ([#14376](https://github.com/quarto-dev/quarto-cli/issues/14376)): Translate the new `navigation-*-label` keys in the built-in language files.
+- ([#14376](https://github.com/quarto-dev/quarto-cli/issues/14376)): Label the table of contents `&lt;nav&gt;` with its localized title (`aria-labelledby`), in `html` and `revealjs` output, so assistive technology can tell it apart from other navigation landmarks.
+- ([#14378](https://github.com/quarto-dev/quarto-cli/issues/14378)): Make overflowing code blocks and cell output keyboard-focusable in HTML output, including Safari, so keyboard users can scroll them with the arrow keys. Their accessible names use the new, translated `scrollable-code-label` and `scrollable-output-label` language keys.
+- ([#14380](https://github.com/quarto-dev/quarto-cli/issues/14380)): Fix default listings rendering an empty, focusable subtitle link for posts without a subtitle, flagged by axe-core (`link-name`).
+- ([#14615](https://github.com/quarto-dev/quarto-cli/issues/14615)): Fix invalid `role="menu"` on the website navbar's collapse toggle button, flagged by axe-core (`aria-allowed-role`) and WAVE (`aria-role-mismatch`).
+- ([#14684](https://github.com/quarto-dev/quarto-cli/issues/14684)): Add a "Skip to main content" link to Bootstrap-themed HTML output (documents, websites, books, dashboards) so keyboard users can bypass the navbar and sidebars.
+- ([#14774](https://github.com/quarto-dev/quarto-cli/issues/14774)): Fix missing keyboard focus indicator on the code tools button and on a website's sidebar toggle and sidebar search buttons.
+- ([#14795](https://github.com/quarto-dev/quarto-cli/issues/14795)): Fix keyboard focus in `revealjs` presentations reaching links and controls on nearby slides that are not shown. Tab now stays on the current slide, except in overview, scroll and print views where all slides are shown.
+- ([#14819](https://github.com/quarto-dev/quarto-cli/issues/14819)): Fix keyboard focus starting inside the page content when a dashboard opens at a page hash, such as `dashboard.html#sales`. Tabbing backward now correctly returns to the page navigation tabs.
+- ([#14844](https://github.com/quarto-dev/quarto-cli/issues/14844)): With `toc-location: left-body` or `right-body`, give the ids in the cloned body table of contents a `-body` suffix. The clone previously repeated every id from the sidebar copy, including the `toc-title` heading that `aria-labelledby` now points at.
+- ([#14952](https://github.com/quarto-dev/quarto-cli/issues/14952)): Fix `revealjs` presentations disabling pinch-zoom on touch devices. The viewport `&lt;meta&gt;` tag no longer sets `maximum-scale=1.0` and `user-scalable=no`, which axe-core flagged (`meta-viewport`).
+- ([#14968](https://github.com/quarto-dev/quarto-cli/issues/14968)): The header of notebook preview pages (back link, notebook title, download link) is now a navigation landmark named after the notebook, so it is reachable through landmark navigation and no longer flagged by axe-core (`region`).
+- ([#14970](https://github.com/quarto-dev/quarto-cli/issues/14970)): Fix keyboard focus order of tabsets in `revealjs` presentations. Tab now follows the order of the slide: tabs and their panel content no longer come before other links on the slide, and two tabsets on the same slide are no longer mixed together.
+- ([#15007](https://github.com/quarto-dev/quarto-cli/pull/15007)): Fix Home/End on a focused tabset tab in `revealjs` presentations also jumping to the first or last slide in addition to switching tabs.
+- ([#15011](https://github.com/quarto-dev/quarto-cli/issues/15011)): Fix the slide menu of `revealjs` presentations being read by screen readers while it is closed and off screen, and Tab moving keyboard focus to it once it lists more slides than fit. (author: @jooyoungseo)
+- ([#15015](https://github.com/quarto-dev/quarto-cli/issues/15015)): Fix the "Back to Article" link of notebook previews in website projects not being reachable or usable with the keyboard.
+- ([#15019](https://github.com/quarto-dev/quarto-cli/issues/15019)): Fix screen reader announcements in `revealjs` presentations including incremental content before it is revealed and repeating slides and fragments when browser history is enabled. (author: @jooyoungseo)
+- ([#15030](https://github.com/quarto-dev/quarto-cli/pull/15030)): Fix `axe` checks in `revealjs` presentations hiding the current slide from screen readers when moving to another slide while the scan runs.
+- ([#15033](https://github.com/quarto-dev/quarto-cli/issues/15033)): Fix screen reader announcements in `revealjs` presentations reading the CSS inside Mermaid diagrams, omitting image alternative text, and reading the contents of `role="img"` graphics instead of their accessible names. (author: @jooyoungseo)
+- ([#15066](https://github.com/quarto-dev/quarto-cli/issues/15066)): Fix default listings rendering an empty, focusable thumbnail link for posts without a preview image, flagged by axe-core (`link-name`); the link is now hidden from assistive technology and taken out of the tab order. (author: @chanellebingham)
+- ([#15079](https://github.com/quarto-dev/quarto-cli/issues/15079)): Fix keyboard focus in `revealjs` presentations moving to the page when coming back to the presentation's browser tab, which took readers off the link or chart they were on and made screen readers stop passing the arrow keys to the presentation. (author: @jooyoungseo)
+- ([#15080](https://github.com/quarto-dev/quarto-cli/issues/15080)): Fix footnote, citation, cross-reference and code annotation popups not closing with Esc, and staying open over the next focused element after keyboard focus leaves them.
+- ([#15126](https://github.com/quarto-dev/quarto-cli/issues/15126)): Translate the `revealjs-menu-button-label` language key in French. (author: @D3ller)
+- ([#15126](https://github.com/quarto-dev/quarto-cli/issues/15126)): Translate the `revealjs-menu-button-label` language key in Greek. (author: @sogav21)
+- ([#15129](https://github.com/quarto-dev/quarto-cli/issues/15129)): Fix default listings rendering an empty, focusable metadata link for posts with no date, author or other listed field to show, flagged by axe-core (`link-name`).
+- ([#15139](https://github.com/quarto-dev/quarto-cli/issues/15139)): HTML output now uses one high-contrast keyboard focus ring for all focusable elements, which stays visible in forced-colors mode. Set its colors with the new `$focus-ring-outer-color` and `$focus-ring-inner-color` Sass variables, and its size with `$focus-ring-outline-width` and `$focus-ring-outline-offset`. Quarto no longer uses Bootstrap's `$focus-ring-color`, `$focus-ring-box-shadow`, `$btn-focus-width`, and `$btn-focus-box-shadow`.
+- ([#15159](https://github.com/quarto-dev/quarto-cli/issues/15159), [#15160](https://github.com/quarto-dev/quarto-cli/issues/15160)): Fix the `revealjs` speaker view's Layout selector having no accessible name or visible keyboard focus, and its current slide, upcoming slide, time, and notes areas not being named regions. Changing layouts no longer forwards control keys to the slides, and the slide navigation buttons no longer introduce an unrelated complementary landmark. (author: @jooyoungseo)
+- ([#15211](https://github.com/quarto-dev/quarto-cli/issues/15211)): Fix default and grid listings rendering empty, focusable links when an item description contains a link, flagged by axe-core (`link-name`), a regression introduced in v1.7.7. Links in descriptions are shown as text again, so the whole description links to the item.
 
 ## Formats
 
 ### All Formats
 
-- ([#14530](https://github.com/quarto-dev/quarto-cli/pull/14530)): Add `quarto.*` Pandoc template variable namespace. `format.language` is now exposed as `$quarto.language.&lt;key&gt;$` in custom Pandoc templates via the defaults-file `variables:` section, with no leakage into rendered output.
-
-### `pdf`
-
-- ([#13588](https://github.com/quarto-dev/quarto-cli/issues/13588)): Fix Lua error when rendering PDF with `reference-location: margin` and a footnote alongside a figure with `fig-cap`. (author: @mcanouil)
-- ([#14553](https://github.com/quarto-dev/quarto-cli/issues/14553)): Fix font fallbacks (`mainfontfallback`, `sansfontfallback`, `monofontfallback`) crashing LuaLaTeX on TeX Live 2026 (luaotfload v3.29+) instead of filling in missing glyphs. Bare fallback names (e.g. `"DejaVu Sans"`) are now automatically colon-terminated as luaotfload requires; names that already carry a terminator or feature options (e.g. `"FreeSans:"`, `"Noto:mode=harf"`) are left untouched. A clear, actionable error is also reported if a fallback crash is still detected.
-- ([#14553](https://github.com/quarto-dev/quarto-cli/issues/14553), [#14558](https://github.com/quarto-dev/quarto-cli/issues/14558)): Fix PDF render failing instead of auto-installing a missing font referenced by `monofontfallback` (and other `mainfont`/`sansfont`/`monofont` fallbacks).
-- ([#14575](https://github.com/quarto-dev/quarto-cli/issues/14575)): Fix caption being placed inside the table body instead of below it for cross-referenceable computational (knitr/Jupyter) tables with `tbl-cap-location: bottom`.
-
-### `typst`
-
-- ([#12556](https://github.com/quarto-dev/quarto-cli/issues/12556)): Filter unavailable fonts from CSS `font-family` fallback lists before passing them to Typst, suppressing `unknown font family` warnings from Typst 1.12+ for fonts not installed locally. Available fonts are enumerated via `typst fonts` and cached per project.
-- ([#14261](https://github.com/quarto-dev/quarto-cli/issues/14261)): Fix theorem/example block titles containing inline code producing invalid Typst markup when syntax highlighting is applied.
-- ([#14460](https://github.com/quarto-dev/quarto-cli/issues/14460)): Fix CSS `border` and `border-color` declarations losing tokens that precede an `rgb()`/`rgba()` color (e.g. `border: 0px solid rgb(255, 0, 0)` rendering as a 2.25pt border instead of being suppressed). Also fixes: `var(--brand-NAME)` references crashing the Typst CSS translator when `NAME` contained digits (e.g. `--brand-red-50`); a crash when an `rgba()` alpha is unparseable; the `dvmin` length unit being silently rejected (a stray space in the unit table); CSS keywords like `BOLD` not matching as `bold` (CSS keywords are case-insensitive); invalid hex colors like `#fffff` being silently accepted as 2-component colors.
-- ([#14511](https://github.com/quarto-dev/quarto-cli/issues/14511)): Fix brand fonts downloaded for a Typst book project not being passed to `typst compile`, causing `unknown font family` warnings and fallback to Libertinus Serif.
-- ([#14524](https://github.com/quarto-dev/quarto-cli/issues/14524), [quarto-ext/orange-book#4](https://github.com/quarto-ext/orange-book/pull/4)): Fix orange-book Typst book running header not honoring `lang:` ??? chapter heading band stayed `Chapter N.` instead of the locale's word (e.g. `Chapitre N.` for `lang: fr`). Also fixes the orange-book `list-of-figure-title` / `list-of-table-title` template pipes which were silently rendering as empty strings. Consumes the `$quarto.language.*$` template-variable namespace from [#14530](https://github.com/quarto-dev/quarto-cli/pull/14530).
-
-### `revealjs`
-
-- ([#14356](https://github.com/quarto-dev/quarto-cli/pull/14356)): Fix trailing whitespace after author name on title slide when ORCID is not set. (author: @jnkatz for the initial fix in #14354)
-- ([#14585](https://github.com/quarto-dev/quarto-cli/issues/14585)): Fix empty blockquote (`&gt; `) crashing render for revealjs format.
+- ([#14772](https://github.com/quarto-dev/quarto-cli/issues/14772)): Fix custom `language` keys expanding to empty strings in Pandoc templates; they are now available through `$quarto.language.&lt;key&gt;$`. (author: @mcanouil)
+- ([#14882](https://github.com/quarto-dev/quarto-cli/issues/14882)): Fix brand font families with a word starting with a digit, such as `Source Sans 3`, not applying in `html` and `revealjs` output. The same names in `mainfont` now also apply in `revealjs`. (author: @Masad791)
+- ([#14891](https://github.com/quarto-dev/quarto-cli/issues/14891)): Fix a brand file that holds only comments, such as a commented-out `_brand.yml` template, stopping the render with `YAML value is missing`. It now prints a warning and is ignored. (author: @Masad791)
 
 ### `dashboard`
 
-- ([#14646](https://github.com/quarto-dev/quarto-cli/issues/14646)): Fix inline code formatting in a dashboard card title being extracted from its original position and appended elsewhere in the header instead of staying inline, the same issue previously fixed for math, emphasis and bold in [#10340](https://github.com/quarto-dev/quarto-cli/issues/10340).
+- ([#14818](https://github.com/quarto-dev/quarto-cli/issues/14818)): Fix a dashboard with more than one page going blank when the URL hash does not name a page, such as a footnote link or a cross-reference link.
+- ([#15023](https://github.com/quarto-dev/quarto-cli/issues/15023)): Fix a dashboard cell's HTML output being moved out of its card when the output contains text such as `bslib` or the word "subslide", and the card being dropped, title included, when the cell shows nothing else. (author: @jooyoungseo)
 
-### `ipynb`
+### `html`
 
-- ([#14693](https://github.com/quarto-dev/quarto-cli/issues/14693)): Fix an empty level-1 heading (`# `) being emitted in the first markdown cell when rendering a document with no `title` to `ipynb`.
+- ([#12452](https://github.com/quarto-dev/quarto-cli/issues/12452)): Fix repeated HTML escaping in Google Scholar metadata, including apostrophes in titles, special characters in authors and URLs, and nested reference metadata.
+- ([#12650](https://github.com/quarto-dev/quarto-cli/issues/12650)): Fix markdown formatting and HTML entities in a document title appearing literally in the appendix citation, the BibTeX citation, and the Google Scholar `citation_title`. (author: @jolars)
+- ([#13444](https://github.com/quarto-dev/quarto-cli/issues/13444)): Fix the code copy button covering the code annotation marker on the first line of an annotated code block, which stopped the annotation from showing on hover or click (regression introduced in v1.8.15).
+- ([#13446](https://github.com/quarto-dev/quarto-cli/issues/13446)): Fix the code copy button sitting above the code frame, and the extra space around the code, when a code block starts or ends a callout (regression introduced in v1.8.15).
+- ([#13448](https://github.com/quarto-dev/quarto-cli/issues/13448)): Fix the code annotation line highlight spilling out to the left of the code block, and sitting above the gutter highlight, in `html`, `dashboard` and `revealjs` output (regression introduced in v1.8.15). (author: @mcanouil)
+- ([#14973](https://github.com/quarto-dev/quarto-cli/issues/14973)): Fix Safari sometimes opening pages with a light and dark theme at the top instead of at the URL fragment target, and toggling the color scheme scrolling back to the top of the page.
+- ([#14976](https://github.com/quarto-dev/quarto-cli/pull/14976)): Fix KaTeX math not rendering on pages with Jupyter widgets when `html-math-method` is set with the object form (`method: katex` and `url`).
+- ([#15049](https://github.com/quarto-dev/quarto-cli/pull/15049)): Fix Google Scholar reference metadata including unused entries from a shared bibliography. Reference tags now follow the rendered citations and bibliography, including entries added with `nocite` and citations with a suppressed bibliography. (author: @jolars)
+- ([#15051](https://github.com/quarto-dev/quarto-cli/pull/15051)): Fix a callout's `title` option also rendering as an HTML `title` attribute in html, revealjs and epub output, which showed the title as a tooltip over the whole callout.
+- ([#15108](https://github.com/quarto-dev/quarto-cli/pull/15108)): Fix Google Scholar metadata showing formatting markup such as `&lt;i&gt;` in `citation_reference` tags for bibliography entries, and `undefined` as the book title of a chapter without one.
+- ([#15115](https://github.com/quarto-dev/quarto-cli/pull/15115)): Fix Google Scholar writing two `citation_reference` tags for a reference defined in two bibliography files. The tag now describes the entry Pandoc renders.
+- ([#15118](https://github.com/quarto-dev/quarto-cli/pull/15118)): Fix Google Scholar metadata missing the first and last page of bibliography entries, and giving wrong pages for a citation `page` written with an en-dash or as a page list.
+- ([#15125](https://github.com/quarto-dev/quarto-cli/pull/15125)): Fix Google Scholar metadata failing the render with a CSL JSON (`.json`) bibliography.
+- ([#15128](https://github.com/quarto-dev/quarto-cli/pull/15128)): Fix Google Scholar metadata missing references with a YAML bibliography not wrapped in `---` delimiters.
+- ([#15131](https://github.com/quarto-dev/quarto-cli/issues/15131)): Fix the light/dark toggle appearing, with no dark styles to switch to, when the `dark` brand file holds only comments and is ignored.
+- ([#15207](https://github.com/quarto-dev/quarto-cli/issues/15207)): Fix the BibTeX citation in the HTML appendix showing a copy button that does nothing when `code-copy: false` is set.
+- ([#15210](https://github.com/quarto-dev/quarto-cli/issues/15210)): Fix the BibTeX citation in the HTML appendix showing and copying altered text when the title contains text that looks like an HTML entity, such as `&amp;lt;` or `R&amp;notebook`.
+
+### `pdf`
+
+- ([#14982](https://github.com/quarto-dev/quarto-cli/issues/14982)): Fix a footnote in document metadata, such as `title` or `author`, making PDF and Typst output shift heading levels, which turned the first level-1 heading into the document title.
+- ([#15027](https://github.com/quarto-dev/quarto-cli/issues/15027)): Fix PDF rendering with regional German variants such as `lang: de-CH` failing when German hyphenation patterns are not installed, instead of installing them automatically.
+- ([#15035](https://github.com/quarto-dev/quarto-cli/issues/15035)): Fix automatic installation of missing hyphenation patterns for the pinned German patterns (`ngerman-x-latest`), for several languages at once, and for languages loaded with `polyglossia`.
+
+### `revealjs`
+
+- ([#14996](https://github.com/quarto-dev/quarto-cli/pull/14996)): Fix `controls: auto` and `previewLinks: auto` set at the top level of a revealjs document's front matter producing a presentation that fails to load, because `auto` was written unquoted into the generated JavaScript.
+- ([#15014](https://github.com/quarto-dev/quarto-cli/issues/15014)): Fix code blocks at the end of a callout losing their bottom spacing, which made the code block border touch the callout border in untitled `appearance="simple"` callouts (regression introduced in v1.8.15).
+- ([#15036](https://github.com/quarto-dev/quarto-cli/issues/15036)): Fix callouts with an id rendering that id twice, on the callout and on a wrapper div, in `revealjs` and `epub` output. The id is now only on the `.callout` div, as in `html` output.
+- ([#15037](https://github.com/quarto-dev/quarto-cli/pull/15037)): Fix `dracula` theme coloring a `&lt;b&gt;` in a callout title with the theme's bold color, unlike `&lt;strong&gt;`.
+
+### `typst`
+
+- ([#11683](https://github.com/quarto-dev/quarto-cli/issues/11683)): Fix `unknown font family` warnings and incorrect fonts when a `font-family` list or brand typography uses a CSS generic family such as `serif`, `sans-serif` or `monospace` in Typst output; generic families now resolve to an installed font. No fonts are bundled.
+- ([#14081](https://github.com/quarto-dev/quarto-cli/issues/14081)): Support `lof` and `lot` in Typst documents, which previously had no effect. The list titles follow `lang` and can be set with `crossref: lof-title` and `lot-title`.
+- ([#14290](https://github.com/quarto-dev/quarto-cli/issues/14290)): Fix `proof`, `remark` and `solution` blocks in Typst output, which rendered as plain text and could not be cross-referenced. They now use the same frames as theorems. Theorem and proof titles set in the language files may now contain Typst markup characters, and a `style` attribute on a theorem or proof now applies in Typst too. (author: @mcanouil)
+- ([#14847](https://github.com/quarto-dev/quarto-cli/pull/14847)): Fix `toc_title` auto-fallback in typst outline template that was ignoring the computed fallback value when `toc_title` is `none`.
+- ([#14947](https://github.com/quarto-dev/quarto-cli/issues/14947)): Fix Typst compilation failing with `invalid number suffix: px` when an image with alt text (`fig-alt`, `alt`, or an inline image caption) has its `width` or `height` in pixels. These images are now written by Pandoc's Typst writer like other images, which also fixes URL-encoded image paths and unsupported size units for them.
 
 ## Projects
 
-### Manuscripts
+- ([#3186](https://github.com/quarto-dev/quarto-cli/issues/3186)): Fix projects being ignored when a directory above the project root starts with a dot. (author: @jkrumbiegel)
 
-- ([#14613](https://github.com/quarto-dev/quarto-cli/issues/14613)): Fix dynamically generated figures missing from the rendered manuscript on Windows on the first render when using the knitr engine with `freeze: auto`.
+### Books
+
+- ([#10114](https://github.com/quarto-dev/quarto-cli/issues/10114)): Support `announcement` under the `book` key, which previously had no effect.
+- ([#14276](https://github.com/quarto-dev/quarto-cli/issues/14276)): Support `llms-txt` under the `book` key, which previously had no effect.
+- ([#14879](https://github.com/quarto-dev/quarto-cli/issues/14879)): Support `plausible-analytics`, `back-to-top-navigation`, and `image-alt` under the `book` key, which previously had no effect.
+- ([#14929](https://github.com/quarto-dev/quarto-cli/pull/14929)): Fix `Error compiling template` when rendering a book to `pdf`, `docx` or `epub` on Windows with Quarto located under a directory whose name starts with `_`, `.`, `-` or another punctuation character.
+- ([#14975](https://github.com/quarto-dev/quarto-cli/issues/14975)): Fix `llms-txt` in book projects showing unresolved cross-references (`Equation eq-one` instead of `Equation 1.1`) in the generated `.llms.md` pages.
+- ([#15106](https://github.com/quarto-dev/quarto-cli/pull/15106)): Fix Google Scholar `citation_reference` metadata missing on the references page of an HTML book.
 
 ### Websites
 
-- ([#13565](https://github.com/quarto-dev/quarto-cli/issues/13565), [#14353](https://github.com/quarto-dev/quarto-cli/issues/14353)): Fix sidebar logo not appearing on secondary sidebars in multi-sidebar website layouts.
-- ([#14562](https://github.com/quarto-dev/quarto-cli/issues/14562)): Fix a heading inside `content-hidden when-format="llms-txt"` (visible in HTML) losing its `&lt;section&gt;` wrapper and `id` in a website with `llms-txt` enabled, which broke its table-of-contents link, anchors, and cross-references.
-- ([#14563](https://github.com/quarto-dev/quarto-cli/issues/14563)): Fix a fatal error when a shortcode is used inside conditional content (e.g. `content-visible when-format="llms-txt"`) in a website with `llms-txt` enabled.
-- ([#14667](https://github.com/quarto-dev/quarto-cli/issues/14667)): Fix the clean-URL rewrite in `quarto-nav.js` breaking links to files whose names merely start with `index.html`, such as the `index.html.md` "Other Formats" links produced when `output-file: index.html` is paired with a markdown format (e.g. by nbdev for llms.txt workflows). The rewrite now only strips `index.html` at the end of the path.
+- ([#9468](https://github.com/quarto-dev/quarto-cli/issues/9468)): Fix listing items not opening in a new tab with `link-external-newwindow: true`. Default listing items still show no external link icon, and grid listing items no longer show it with `link-external-icon: true`. (author: @mcanouil)
+- ([#10756](https://github.com/quarto-dev/quarto-cli/issues/10756)): Fix the notebook preview of an embedded `.qmd` file going missing from the output directory when a project is rendered again, which broke its source notebook link.
+- ([#12014](https://github.com/quarto-dev/quarto-cli/issues/12014)): Fix `twitter-card` `image-width` and `image-height` being listed as options although Twitter Cards have no image size tags. They are no longer documented, and setting them prints a warning pointing to `open-graph`, where an image size is used. The size Quarto measures from a local image is no longer written as `twitter:image-height` and `twitter:image-width` tags, only as `og:image:height` and `og:image:width`.
+- ([#12016](https://github.com/quarto-dev/quarto-cli/issues/12016)): Fix `open-graph` `image-width` and `image-height` being dropped when `site-url` is set and Quarto cannot measure the image, such as a remote image. A size declared in the site `open-graph` options no longer applies when a page sets its own `image`, even the same file: declare `image-width` and `image-height` in the page `open-graph` options or in shared metadata such as `_metadata.yml`.
+- ([#14493](https://github.com/quarto-dev/quarto-cli/issues/14493)): Fix category links on a post going to the wrong listing when the post appears in more than one listing. (author: @mcanouil)
+- ([#14917](https://github.com/quarto-dev/quarto-cli/issues/14917)): Fix `og:site_name` ignoring a page's `open-graph.site-name` and always showing the website title. Quarto also no longer rewrites `og:site_name`, `og:title`, `og:description`, `twitter:title` or `twitter:description` tags it did not write, such as ones added with `include-in-header` or by an extension. (author: @Masad791)
+- ([#14972](https://github.com/quarto-dev/quarto-cli/issues/14972)): Fix the website navbar, sidebar toggle bar, or announcement covering the header of notebook preview pages, which hid the back link, notebook title, and download link. The notebook preview header now sits below the site header.
+- ([#14974](https://github.com/quarto-dev/quarto-cli/issues/14974)): Fix math in `.llms.md` files from `llms-txt` coming out garbled with the default `mathjax` method, and with `katex` and `webtex`. Math is now written as `$...$` and `$$...$$` with the `mathjax`, `katex`, `webtex` and `mathml` methods.
+- ([#15004](https://github.com/quarto-dev/quarto-cli/issues/15004)): Fix notebook preview pages and notebook sources missing from the output directory when a website with embedded notebooks is rendered from a directory other than the project directory.
+- ([#15022](https://github.com/quarto-dev/quarto-cli/issues/15022)): Fix rendering a listing with a `feed` failing on Windows with `os error 123` when a listing item's `image` or the feed `image` is a web URL. The image URL is used as is in the feed and no local size lookup is attempted. (author: @Masad791)
+- ([#15032](https://github.com/quarto-dev/quarto-cli/pull/15032)): Fix the listing feed `image` missing its height and width when a website is rendered from a directory other than the project directory, or when the image path starts with `/`.
+- ([#15039](https://github.com/quarto-dev/quarto-cli/issues/15039)): Fix the open graph and twitter card image of website pages in subdirectories pointing to a missing file when the image comes from a relative `website: image:`, `open-graph: image:` or `twitter-card: image:` under `website:`, and the listing feed image pointing to a missing file when it comes from the `image` of a listing page in a subdirectory. A project relative image path starting with `/` no longer gives a doubled `/` in these URLs when `site-url` ends with `/`.
+- ([#15044](https://github.com/quarto-dev/quarto-cli/issues/15044)): Fix a YAML file listed next to a folder in a listing's `contents` being left out, or another file being used, when a website is rendered from a directory other than the listing page's directory.
+- ([#15050](https://github.com/quarto-dev/quarto-cli/pull/15050)): Support JPEG images when adding image height and width to the listing feed `image`, feed item media, and `og:image` metadata. Image files are now detected by content rather than file extension, so an uppercase `.PNG` is measured too.
+- ([#15055](https://github.com/quarto-dev/quarto-cli/issues/15055)): Fix `og:image` and `twitter:image` of website pages using an inline data URI image, such as the ORCID badge of an author, joined to `site-url` instead of the next image of the page or the site `image`. A data URI set as a page, site or listing item `image` is now ignored with a warning for social metadata and listing feeds, as these images are fetched by URL, and listing cards show it as is.
+- ([#15057](https://github.com/quarto-dev/quarto-cli/pull/15057)): Fix a numeric top-level `image-width` or `image-height` in page front matter failing the render. These options were never used, so they are removed from the schema; declare the preview image size under `open-graph` instead.
+- ([#15083](https://github.com/quarto-dev/quarto-cli/pull/15083)): Fix editors offering no completion for the top-level `image-title` option that about pages read, and correct the description of the top-level `image-lazy-loading` option, which only affects the page's image when it appears in a listing.
+- ([#15084](https://github.com/quarto-dev/quarto-cli/pull/15084)): Fix page-level `open-graph` and `twitter-card` options not being validated, which let a misspelled option be silently ignored and a value of the wrong type crash the render. These options are now checked like their `website` counterparts, so a page or `_metadata.yml` with an unknown option under `open-graph` or `twitter-card`, which was ignored before, now fails to render with an error naming the option.
+- ([#15091](https://github.com/quarto-dev/quarto-cli/pull/15091)): Fix page-level `bread-crumbs`, `back-to-top-navigation`, `page-navigation`, `margin-header` and `margin-footer` options not being validated or offered for completion in editors. A page value of the wrong type now fails to render with an error instead of being accepted silently.
+- ([#15091](https://github.com/quarto-dev/quarto-cli/pull/15091)): Fix `open-graph: false` or `twitter-card: false` in page front matter or `_metadata.yml` not disabling Open Graph or Twitter Card metadata for that page when the website enables it.
+- ([#15114](https://github.com/quarto-dev/quarto-cli/pull/15114)): Fix a website category containing backticks showing broken text in the page title block, and a category containing a backslash, such as a Windows path, failing the render or losing its backslashes.
+- ([#15206](https://github.com/quarto-dev/quarto-cli/issues/15206)): Fix website listings attaching another update handler on every URL hash change, and an extra one per additional listing on the same page.
+- ([#15217](https://github.com/quarto-dev/quarto-cli/pull/15217)): Fix website listings updating twice for each click on a pagination link.
 
 ## Lua API
 
-- ([#14297](https://github.com/quarto-dev/quarto-cli/pull/14297)): Fix `quarto.utils.is_empty_node()` returning inverted results for text nodes (`Str`, `Code`, `RawInline`).
+- ([#14894](https://github.com/quarto-dev/quarto-cli/pull/14894)): Fix `quarto.version` and `quarto.config.version()` crashing filters with `table expected, got string` when the version string contains semver build metadata (such as a distro packager's revision suffix) or otherwise does not start with a digit.
 
 ## Commands
 
-### `quarto preview`
+### `call`
 
-- ([#10392](https://github.com/quarto-dev/quarto-cli/issues/10392)): Fix `quarto preview` of a website or book project showing stale HTML for non-index pages after editing the source `.qmd`.
-- ([#14281](https://github.com/quarto-dev/quarto-cli/issues/14281)): Avoid creating a duplicate `.quarto_ipynb` file on preview startup for single-file Jupyter documents.
-- ([#14533](https://github.com/quarto-dev/quarto-cli/issues/14533)): Fix `quarto preview` not detecting a frontmatter `format:` change until the second render request. The first request after the edit now correctly restarts the preview process with the new format.
-- ([#14593](https://github.com/quarto-dev/quarto-cli/issues/14593)): Fix `quarto preview` ignoring a `_brand.yml` added or removed while the preview is running. The brand change is now applied on the next render instead of requiring a preview restart.
-- ([#14594](https://github.com/quarto-dev/quarto-cli/issues/14594)): Fix `quarto preview` of a book or website project crashing with `BadResource: Bad resource ID` when re-rendering pages.
-
-### `install`
-
-- ([#11877](https://github.com/quarto-dev/quarto-cli/issues/11877), [#9710](https://github.com/quarto-dev/quarto-cli/issues/9710)): Add arm64 Linux support for `quarto install chrome-headless-shell` using Playwright CDN as download source, since Chrome for Testing has no arm64 Linux builds.
-- ([#11877](https://github.com/quarto-dev/quarto-cli/issues/11877)): Deprecate `quarto install chromium` ??? the command now transparently redirects to `chrome-headless-shell`. Installing `chrome-headless-shell` automatically removes any legacy Chromium installation. Use `chrome-headless-shell` instead, which always installs the latest stable Chrome (the legacy `chromium` installer pins an outdated Puppeteer revision that cannot receive security updates).
-- ([#14304](https://github.com/quarto-dev/quarto-cli/issues/14304)): Fix `quarto install tinytex` silently ignoring extraction failures. When archive extraction fails (e.g., `.tar.xz` on a system without `xz-utils`), the installer now reports a clear error instead of proceeding and failing with a confusing `NotFound` message.
-- ([#14363](https://github.com/quarto-dev/quarto-cli/pull/14363)): Add retry logic for tool downloads to handle transient network failures (connection resets, CDN timeouts) during `quarto install`.
-- ([#14538](https://github.com/quarto-dev/quarto-cli/pull/14538)): `quarto install tinytex` and `quarto update tinytex` now set the TeX Live repository to the TinyTeX CDN-backed mirror at &lt;https://tlnet.yihui.org&gt; when reachable, falling back to `mirror.ctan.org`'s automatic redirect and the existing US university mirrors otherwise. Matches the default in the [R tinytex package](https://github.com/rstudio/tinytex) since March 2026. Override the resolved repository with the `QUARTO_TINYTEX_REPOSITORY` environment variable, or with `CTAN_REPO` (also honored for parity with the R [tinytex](https://github.com/rstudio/tinytex) package). See &lt;https://yihui.org/en/2026/03/tinytex-ctan-mirror/&gt; for background.
+- ([#14815](https://github.com/quarto-dev/quarto-cli/pull/14815)): Add `quarto call axe`, a hidden experimental command that scans a rendered site for accessibility violations across pages, viewport sizes and color modes, with baseline tracking and CI checks. See [dev-docs/axe-scan.md](https://github.com/quarto-dev/quarto-cli/blob/main/dev-docs/axe-scan.md).
+- ([1dfa0cff3](https://github.com/quarto-dev/quarto-cli/commit/1dfa0cff31fd690e4ed8d9e8490d00793cbdc4db)): Fix hidden `call` and `dev-call` subcommands rejecting `--log`, `--log-level`, `--log-format` and `--quiet`.
 
 ### `check`
 
-- ([#11877](https://github.com/quarto-dev/quarto-cli/issues/11877)): `quarto check install` now shows a deprecation warning when legacy Chromium (installed via `quarto install chromium`) is detected, directing users to install `chrome-headless-shell` as a replacement.
+- ([#14960](https://github.com/quarto-dev/quarto-cli/issues/14960)): Fix `quarto check` failing on unreadable project directories; it now reads only the project configuration. `quarto check info` reports the project root and configuration file, including in JSON output, and warns about home-directory or filesystem-root projects. Render and preview errors now identify the unreadable directory and project configuration.
 
-### `quarto create`
+### `dev-call`
 
-- ([#14250](https://github.com/quarto-dev/quarto-cli/issues/14250)): Fix `quarto create` producing read-only files when Quarto is installed via system packages (e.g., `.deb`). Files copied from installed resources now have user-write permission ensured.
+- ([#14859](https://github.com/quarto-dev/quarto-cli/pull/14859)): Fix `quarto dev-call build-artifacts` generating editor and YAML schemas from stale generated files instead of the current schema sources.
+
+### `render`
+
+- ([#14254](https://github.com/quarto-dev/quarto-cli/issues/14254)): Fix `quarto render` hanging when the input file is at the filesystem root. (author: @mcanouil)
+- ([#14897](https://github.com/quarto-dev/quarto-cli/pull/14897)): Fix released Quarto binaries exiting silently on Pandoc failures; failures now produce ERROR log records containing Pandoc's error message.
+
+### `use template`
+
+- ([#14008](https://github.com/quarto-dev/quarto-cli/issues/14008)): Fix `quarto use template` not installing the template's extensions when they are scoped by organisation, such as `quarto-journals/acm`. (author: @mcanouil)
+
+## Extensions
+
+- ([#14936](https://github.com/quarto-dev/quarto-cli/pull/14936)): Accept static engine declarations in the `external-engine` schema so extensions can declare engines for Quarto 2 without failing Quarto 1 validation; these declarations do not change Quarto 1 execution. (author: @gordonwoodhull)
+- ([#15111](https://github.com/quarto-dev/quarto-cli/issues/15111)): Add installation messages explaining which extension name to use when the source contains an extension under a different owner.
 
 ## Engines
 
-### Jupyter
+### `knitr`
 
-- ([#11150](https://github.com/quarto-dev/quarto-cli/issues/11150)): Fix `dashboard` format showing spurious intermediate text output (e.g. a `Text(...)` repr or a matplotlib object repr) next to a figure when a cell's top-level plotting calls echo their return values.
-- ([#13582](https://github.com/quarto-dev/quarto-cli/pull/13582)): Fix `application/pdf` and `text/latex` MIME types not being preferred over `image/svg+xml` when rendering Jupyter notebooks to PDF, which caused errors when `rsvg-convert` was not available. (author: @jkrumbiegel)
-- ([#14374](https://github.com/quarto-dev/quarto-cli/pull/14374)): Avoid a crash when a third-party Jupyter kernel (observed with Maple 2025, built on XEUS) returns `execute_reply` without the required `status` field. The failing cell is recorded as an error instead of aborting the render. (author: @ChrisJefferson)
+- ([#14735](https://github.com/quarto-dev/quarto-cli/issues/14735)): Fix `cache-globals` rejecting arrays and booleans, so it now accepts the same forms as `cache-vars` and as knitr itself. Previously they were ignored.
+- ([#14843](https://github.com/quarto-dev/quarto-cli/pull/14843)): Fix R discovery errors during diagnostics hiding the original R execution error.
+- ([#14928](https://github.com/quarto-dev/quarto-cli/pull/14928)): Fix raw knitr cell source leaking into the `original.code` attribute of generated HTML.
+
+### `julia`
+
+- ([#14834](https://github.com/quarto-dev/quarto-cli/issues/14834)): Fix `ERROR: Internal Error` when rendering documents whose payload exceeds the Julia server's socket send buffer.
+- ([PumasAI/quarto-julia-engine#7](https://github.com/PumasAI/quarto-julia-engine/pull/7)): Support `execute-dir` and shared worker processes across notebooks with matching configurations (`share_worker_process: true`).
+- ([PumasAI/quarto-julia-engine#8](https://github.com/PumasAI/quarto-julia-engine/pull/8)): Support `keep-ipynb`, which writes the executed notebook to `&lt;stem&gt;.ipynb` alongside the source file.
+- ([PumasAI/quarto-julia-engine#11](https://github.com/PumasAI/quarto-julia-engine/pull/11)): Support `fig-format: retina`, normalized to `png` with doubled `fig-dpi` as in the `jupyter` and `knitr` engines.
+- ([PumasAI/quarto-julia-engine#13](https://github.com/PumasAI/quarto-julia-engine/pull/13)): Shell (`;`), help (`?`), and Pkg (`]`) mode cells now work when the cell has `#|` options.
+- ([PumasAI/quarto-julia-engine#14](https://github.com/PumasAI/quarto-julia-engine/pull/14)): Fix the Julia worker process being left running after a failed render without an execution daemon.
+- ([PumasAI/quarto-julia-engine#16](https://github.com/PumasAI/quarto-julia-engine/pull/16)): Update QuartoNotebookRunner to 0.18.5, which fixes renders hanging on long error stacktraces or on cells that leave a process running, blank R plots with `fig-format: svg`, slow shutdown of workers with a lot of `stdout` output, and cached cell outputs not being invalidated when document or project metadata changes.
+
+### `jupyter`
+
+- ([#13966](https://github.com/quarto-dev/quarto-cli/issues/13966)): Fix doubled newlines in HTML output of stdout and stderr containing ANSI escape codes.
 
 ## Other fixes and improvements
 
-- ([#6092](https://github.com/quarto-dev/quarto-cli/issues/6092)): Fix the `default-image-extension` being appended to an extensionless URL ending in a slash (e.g. `![](https://example.com/)`), which broke the embed/iframe image syntax.
-- ([#6651](https://github.com/quarto-dev/quarto-cli/issues/6651)): Fix dart-sass compilation failing in enterprise environments where `.bat` files are blocked by group policy.
-- ([#11703](https://github.com/quarto-dev/quarto-cli/issues/11703)): Fix SCSS color-variable export (`--quarto-scss-export-*`) being silently skipped when a theme rule contains consecutive semicolons (e.g. `max-height: 100% !important;;`).
-- ([#12401](https://github.com/quarto-dev/quarto-cli/issues/12401)): Fix `QUARTO_DOCUMENT_PATH` being a relative path for single-file renders, inconsistent with project renders where it was absolute. Execution target paths are now normalized to absolute at a single point, so single-file and project renders behave the same.
-- ([#14255](https://github.com/quarto-dev/quarto-cli/issues/14255)): Fix shortcodes inside inline and display math expressions not being resolved.
-- ([#14342](https://github.com/quarto-dev/quarto-cli/issues/14342)): Work around TOCTOU race in Deno's `expandGlobSync` that can cause unexpected exceptions to be raised while traversing directories during project initialization.
-- ([#14359](https://github.com/quarto-dev/quarto-cli/issues/14359)): Fix intermediate `.quarto_ipynb` file not being deleted after rendering a `.qmd` with Jupyter engine, causing numbered variants (`_1`, `_2`, ...) to accumulate on disk across renders.
-- ([#14445](https://github.com/quarto-dev/quarto-cli/issues/14445)): Fix intermittent `Uncaught (in promise) TypeError: Writable stream is closed or errored.` aborting renders on Linux. `execProcess` now awaits and swallows the rejection from `process.stdin.close()` when the child closes its stdin first. The captured stderr is now also surfaced when `typst-gather analyze` falls back to staging all packages, so failures are diagnosable without bypassing `quarto`.
-- ([#14461](https://github.com/quarto-dev/quarto-cli/issues/14461)): Fix `quarto render --to pdf` aborting with `ERROR: Problem running 'fmtutil-sys --all' to rebuild format tree.` when an automatically-installed LaTeX package's post-update format rebuild fails. Format-tree rebuild is now treated as best-effort housekeeping (matching upstream `tinytex` R behavior) ??? the failure is logged as a warning and the package install completes.
-- ([#14472](https://github.com/quarto-dev/quarto-cli/issues/14472)): Add support for Kotlin in code annotations and YAML cell options.
-- ([#14529](https://github.com/quarto-dev/quarto-cli/issues/14529)): Fix bundled Julia engine path leaking into rendered YAML metadata and pandoc log output when running an installed Quarto. The internal subtree-engine filter only matched the source-tree share-path layout (`resources/extension-subtrees/`) and missed installed layouts where the path is `share/extension-subtrees/`.
-- ([#14576](https://github.com/quarto-dev/quarto-cli/issues/14576)): Fix website render hanging when sidebar titles contain double-underscore (dunder) names.
-- ([#14577](https://github.com/quarto-dev/quarto-cli/issues/14577)): Fix an embedded notebook with no explicit title using a Python comment inside a code cell as the notebook title. Heading extraction now skips fenced code blocks, so a comment that merely looks like a heading is never promoted; first real markdown heading anywhere in the notebook markdown body is still used as before if not `title` provided.
-- ([#14582](https://github.com/quarto-dev/quarto-cli/issues/14582)): Fix format detection for extension formats (e.g. `acm-pdf`) in project preview, manuscript notebooks, MECA bundles, and website format ordering.
-- ([#14583](https://github.com/quarto-dev/quarto-cli/issues/14583)): Fix a shortcode used as an image source (e.g. `![]({{&lt; meta logo &gt;}})`) getting the `default-image-extension` appended, producing a doubled extension once the shortcode resolves.
-- ([#14595](https://github.com/quarto-dev/quarto-cli/issues/14595)): Fix reload preview in code-server environment. (author: @micedre)
-- ([#14669](https://github.com/quarto-dev/quarto-cli/issues/14669)): Fix markdown output being deleted when `output-file` has an `.html` extension and an html format is paired with a markdown format.
-- ([#14687](https://github.com/quarto-dev/quarto-cli/issues/14687)): Fix SCSS color-variable export (`--quarto-scss-export-*`) being silently skipped when a theme rule places a declaration on the same line as the opening brace with no space after the colon (e.g. `.example {width:100px;}`).
-- ([#14722](https://github.com/quarto-dev/quarto-cli/issues/14722)): Fix `{{&lt; placeholder &gt;}}` shortcode failing to render on non-SVG formats after an external image service was retired; placeholders now render locally with no network access.
+- ([#9864](https://github.com/quarto-dev/quarto-cli/issues/9864), [#11139](https://github.com/quarto-dev/quarto-cli/issues/11139)): Fix metadata from projects, directories and `metadata-files` being lost when the same keys appear in document front matter, so Pandoc templates and Lua filters receive the merged values. Document values still take precedence for single values; lists are now combined, so a document can no longer replace an inherited list such as `keywords`. (author: @jkrumbiegel)
+- ([#14765](https://github.com/quarto-dev/quarto-cli/issues/14765)): Fix content after a `mermaid` diagram disappearing, and `ojs` cells after it not running, when the diagram has its own `---` configuration block. (author: @mcanouil)
+- ([#14775](https://github.com/quarto-dev/quarto-cli/issues/14775)): Fix a crash when the `QUARTO_R` environment variable is set to a malformed path. Quarto now warns and falls back to other R lookup methods.
+- ([#14812](https://github.com/quarto-dev/quarto-cli/pull/14812)): Fix Windows source builds failing to extract ZIP dependencies when GNU tar is on PATH.
+- ([#14865](https://github.com/quarto-dev/quarto-cli/issues/14865)): Fix internal links in a preview being treated as external when the preview is reached through a proxy, such as on Posit Workbench. Links are now classified against the origin the browser sees.
+- ([#14878](https://github.com/quarto-dev/quarto-cli/pull/14878)): Add `az` (Azerbaijani) language translation. (author: @abdanar)
+- ([#14983](https://github.com/quarto-dev/quarto-cli/issues/14983)): Fix `quarto render` treating a parent folder as a Hugo project when its `config/` folder can't be entered, which silently wrote `hugo-md` output or failed with a permission error. (author: @pinin4fjords)
+- ([#15097](https://github.com/quarto-dev/quarto-cli/pull/15097)): Fix the `.content-hidden unless-profile` attribute completion inserting invalid syntax (its `=` was missing), and typos in three attribute completion descriptions. (author: @rkskmt)
+- ([#15119](https://github.com/quarto-dev/quarto-cli/issues/15119)): Fix renders failing with `RangeError: could not deserialize value` when a Quarto cache file is damaged. A damaged entry is now recomputed, and a damaged cache file is reported with the folder to delete.
+- ([#15140](https://github.com/quarto-dev/quarto-cli/pull/15140)): Add support for definition lists written as a `definition-list` div holding a nested bullet list, the definition list syntax of Quarto 2.
+- ([#15157](https://github.com/quarto-dev/quarto-cli/issues/15157)): Fix `quarto preview` and other commands sometimes starting a local server on port 4190, which browsers refuse to connect to.
+- ([#15180](https://github.com/quarto-dev/quarto-cli/pull/15180)): Fix older Quarto versions failing to render with `RangeError: could not deserialize value` once a Quarto built on a newer Deno has used the same cache. Also fix a project cache that already has entries failing to clear with `Path must be a string`.
+- ([#15198](https://github.com/quarto-dev/quarto-cli/issues/15198)): Fix `quarto add`, `quarto use template`, `quarto use brand` and `quarto install tinytex` failing to unzip on Windows when a Group Policy blocks running `.bat` files from the temporary folder, and when a path contains an apostrophe.
+- ([#15227](https://github.com/quarto-dev/quarto-cli/pull/15227)): Fix TypeScript scripts run by Quarto, such as `quarto run` scripts, project pre- and post-render scripts and Jupyter filters, losing their downloaded npm packages on Windows, which made them fail when run offline (regression introduced in v1.9).
+- ([fdf5a9685](https://github.com/quarto-dev/quarto-cli/commit/fdf5a968509bc5903b328d9f99bc5d99bc53b149)): Fix Windows source builds failing to locate configuration and build scripts.
 </releaseNotes>
     <!-- =============================== -->
   </metadata>
